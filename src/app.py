@@ -1,3 +1,13 @@
+@app.delete("/activities/{activity_name}/unregister")
+def unregister_participant(activity_name: str, email: str):
+    """Remove a participant from an activity"""
+    if activity_name not in activities:
+        raise HTTPException(status_code=404, detail="Activity not found")
+    activity = activities[activity_name]
+    if email not in activity["participants"]:
+        raise HTTPException(status_code=404, detail="Participant not found")
+    activity["participants"].remove(email)
+    return {"message": f"Removed {email} from {activity_name}"}
 """
 High School Management System API
 
@@ -39,7 +49,7 @@ activities = {
         "max_participants": 30,
         "participants": ["john@mergington.edu", "olivia@mergington.edu"]
     },
-    # Sports activities
+
     "Soccer Team": {
         "description": "Join the school soccer team and compete in local leagues",
         "schedule": "Wednesdays, 4:00 PM - 5:30 PM",
@@ -78,7 +88,7 @@ activities = {
         "max_participants": 20,
         "participants": []
     }
-}
+}    # Sports activities
 
 
 @app.get("/")
